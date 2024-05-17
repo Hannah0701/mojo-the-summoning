@@ -44,4 +44,18 @@ describe('User', () => {
     expect(deletedUser).toBeNull();
   });
 
-})
+  it("can associate a Deck with a User", async() => {
+    const user1 = await User.create({
+      username: "saruman",
+    })
+    await user1.createDeck({
+      name: "The grey army",
+      xp: 100
+    });
+    const deck = await user1.getDeck();
+
+    expect(deck.name).toBe("The grey army");
+    expect(deck.xp).toBe(100);
+  });
+
+});

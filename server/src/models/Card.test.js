@@ -49,7 +49,51 @@ describe('Card', () => {
         await card.destroy();
         const deletedCard = await Card.findByPk(card.id);
         expect(deletedCard).toBeNull();
-    })
+    });
+
+    it('can associate a Deck with a Card', async () => {
+        const card1 = await Card.create({
+            name: 'Gandalf',
+            mojo: 100,
+            stamina: 100,
+            imgUrl: 'https://www.gandalf.com'
+        });
+        await card1.createDeck({
+            name: 'The grey army',
+            xp: 100
+        });
+        const deck = await card1.getDeck();
+
+        expect(deck.name).toBe('The grey army');
+        expect(deck.xp).toBe(100);
+    });
+
+    it('can associate many Attacks with a Card', async () => {
+        const card1 = await Card.create({
+            name: 'Gandalf',
+            mojo: 100,
+            stamina: 100,
+            imgUrl: 'https://www.gandalf.com'
+        });
+        await card1.createAttack({
+            title: 'Fireball',
+            mojoCost: 10,
+            staminaCost: 10
+        });
+        await card1.createAttack({
+            title: 'Iceball',
+            mojoCost: 5,
+            staminaCost: 5
+        });
+        const attacks = await card1.getAttacks();
+
+        expect(attacks[0].title).toBe('Fireball');
+        expect(attacks[0].mojoCost).toBe(10);
+        expect(attacks[0].staminaCost).toBe(10);
+        expect(attacks[1].title).toBe('Iceball');
+        expect(attacks[1].mojoCost).toBe(5);
+        expect(attacks[1].staminaCost).toBe(5);
+    });
 
 });
 
